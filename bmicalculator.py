@@ -1,3 +1,4 @@
+'''
 # Calculate BMI
 height = float(input("Enter height: "))
 weight = float(input("Enter weight: "))
@@ -12,3 +13,22 @@ if action == "BMI":
         height, weight = map(float, f.read().split())
         bmi = weight / (height ** 2)
         print(f"Your BMI is {bmi}")
+        '''
+        
+# Store User Information
+name = input("Enter your name: ")
+while True:
+    age = input("Enter your age: ")
+    try:
+        int(age)
+        if 5 <= age <= 120:
+            break
+    except ValueError:
+        print("Invalid Input. Please enter a number between 5- 120.")
+while True:
+    height = input("Enter your age: ")
+    try:
+        float(height)
+        break
+    except ValueError:
+        print("Invalid Input. Please enter a decimal number.")
