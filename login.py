@@ -161,12 +161,5 @@ password_label.grid(row=2, column=0)
 password_entry.grid(row=2, column=1, pady=20)
 login_button.grid(row=3, column=0, columnspan=2, pady=30)
 register_button.grid(row=4, column=0, columnspan=2, pady=10)
-
-home_frame = tk.Frame(bg='#223322')
-home_frame_label = tk.Label(home_frame, text="Welcome to the Homepage!")
-home_frame_label.pack(pady=20)
-
 login_frame.pack()
-home_frame.forget()
-
 window.mainloop()

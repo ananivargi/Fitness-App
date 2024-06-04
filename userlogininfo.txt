@@ -1,2 +1,3 @@
-#username;password;name;age;bmi;vo2max
-ananya;nivargi;1;2;3;4
+#username;password;name;age;height;weight;vo2max
+ananya;nivargi;ananya;8;8;8;8
+

@@ -1,1 +1,0 @@
-name,age,weight,height,VO2
