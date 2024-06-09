@@ -5,7 +5,7 @@ class MainApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("BodyWise Fitness App")
-        self.geometry('800x800')
+        self.geometry('700x500')
         self.configure(bg='#333333')
         self.name = ''
         self.age = ''
@@ -20,7 +20,7 @@ class MainApp(tk.Tk):
         self.frames[LoginPage] = LoginPage(parent=self, controller=self)
         self.frames[HomePage] = HomePage(parent=self, controller=self)
         self.frames[RegisterWindow] = RegisterWindow(parent=self, controller=self)
-
+        self.frames[ProfilePage] = ProfilePage(parent=self,controller=self)
         for frame in self.frames.values():
             frame.grid(row=0, column=0, sticky="nsew")
 
@@ -86,22 +86,26 @@ class LoginPage(tk.Frame):
         self.configure(bg='#333333')
         
         login_label = tk.Label(self, text="BodyWise", bg='#333333', fg="#468ce8", font=("Arial", 30))
-        #login_label.place(relx = 0.5, rely = 0.5, anchor = 'center')
+        login_label.grid(row=0, column=0, columnspan=2, pady=40)
+        
         username_label = tk.Label(self, text="Username", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        username_label.grid(row=1, column=0, padx=20)
         self.username_entry = tk.Entry(self, font=("Arial", 16))
-        password_label = tk.Label(self, text="Password", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
-        self.password_entry = tk.Entry(self, show="*", font=("Arial", 16))
-        login_button = tk.Button(self, text="Login", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.login)
-        register_button = tk.Button(self, text="Register", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.register)
-
-        login_label.grid(row=0, column=0, columnspan=2, sticky="news", pady=40)
-        username_label.grid(row=1, column=0)
         self.username_entry.grid(row=1, column=1, pady=20)
-        password_label.grid(row=2, column=0)
-        self.password_entry.grid(row=2, column=1, pady=20)
-        login_button.grid(row=3, column=0, columnspan=2, pady=30)
-        register_button.grid(row=4, column=0, columnspan=2, pady=10)
+        
+        password_label = tk.Label(self, text="Password", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        password_label.grid(row=2, column=0, padx=20)
 
+        self.password_entry = tk.Entry(self, show="*", font=("Arial", 16))
+        self.password_entry.grid(row=2, column=1, pady=20)
+
+        
+        login_button = tk.Button(self, text="Login", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.login)
+        login_button.grid(row=3, column=0, columnspan=2, pady=30)
+        
+        register_button = tk.Button(self, text="Register", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.register)
+        register_button.grid(row=4, column=0, columnspan=2, pady=10)
+        
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
@@ -122,33 +126,41 @@ class HomePage(tk.Frame):
         self.controller = controller
         self.configure(bg='#333333')
 
-        self.sidebar_frame = tk.Frame(self, bg='orange', width=50)
-        self.sidebar_frame.pack(fill='y', side='right', anchor='e')
-        
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(3, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+
+        self.welcome_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Arial", 24))
+        self.welcome_label.place(x=200,y=50)
+
+        self.sidebar_frame = tk.Frame(self, bg='orange', width=50, height=800) #self.winfo_height()
+        self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="ns")
+        self.sidebar_frame.grid_propagate(False)
+
+        self.home_button = tk.Button(self.sidebar_frame, text='', bg='orange', relief='flat', command=self.go_home)
+        self.settings_button = tk.Button(self.sidebar_frame, text='', bg='orange', relief='flat', command=self.go_settings)
+        self.ring_button = tk.Button(self.sidebar_frame, text='', bg='orange', relief='flat', command=self.go_ring)
+
+        self.home_button.grid(row=0, column=0, pady=10)
+        self.settings_button.grid(row=1, column=0, pady=50)
+        self.ring_button.grid(row=2, column=0, pady=10)
+
         self.sidebar_frame.bind('<Enter>', lambda e: self.expand())
         self.sidebar_frame.bind('<Leave>', lambda e: self.contract())
 
-        self.home_button = tk.Button(self.sidebar_frame, text='', bg='orange', relief='flat', command=self.go_home)
-        self.profile_button = tk.Button(self.sidebar_frame, text='', bg='orange', relief='flat', command=self.go_profile)
-        self.goals_button = tk.Button(self.sidebar_frame, text='', bg='orange', relief='flat', command=self.go_goals)
+        self.content_frame = tk.Frame(self, bg='#333333')
+        self.content_frame.grid(row=1, column=1, sticky="nsew", rowspan=3)
 
-        self.home_button.pack(pady=10)
-        self.profile_button.pack(pady=50)
-        self.goals_button.pack(pady=10)
+        self.bmi_button = tk.Button(self.content_frame, text="Calculate BMI", bg='#333333', fg="#FFFFFF", font=("Arial", 24), command=self.calculate_bmi)
+        self.bmi_button.grid(row=0, column=0, pady=20, padx=20)
 
         self.cur_width = 50
         self.max_width = 200
         self.min_width = 50
         self.expanded = False
-
-        self.content_frame = tk.Frame(self, bg='#333333')
-        self.content_frame.pack(side='left', fill='both', expand=True)
-
-        self.welcome_label = tk.Label(self.content_frame, text="", bg='#333333', fg="#FFFFFF", font=("Arial", 24))
-        self.welcome_label.pack(pady=20, padx=20, anchor="w")
-
-        self.bmi_button = tk.Button(self.content_frame, text="Calculate BMI", bg='#333333', fg="#FFFFFF", font=("Arial", 24), command=self.calculate_bmi)
-        self.bmi_button.pack(pady=20)
 
     def expand(self):
         if self.cur_width < self.max_width:
@@ -171,34 +183,30 @@ class HomePage(tk.Frame):
     def fill(self):
         if self.expanded:
             self.home_button.config(text='Home', font=("Arial", 14))
-            self.profile_button.config(text='Profile', font=("Arial", 14))
-            self.goals_button.config(text='Goals', font=("Arial", 14))
+            self.settings_button.config(text='Settings', font=("Arial", 14))
+            self.ring_button.config(text='Notifications', font=("Arial", 14))
         else:
             self.home_button.config(text='', font=("Arial", 10))
-            self.profile_button.config(text='', font=("Arial", 10))
-            self.goals_button.config(text='', font=("Arial", 10))
+            self.settings_button.config(text='', font=("Arial", 10))
+            self.ring_button.config(text='', font=("Arial", 10))
 
     def update_welcome_message(self, name):
         self.welcome_label.config(text=f"Welcome, {name}")
 
-    def calculate_bmi(self):
-        try:
-            height = float(self.controller.height) / 100  # Convert cm to meters
-            weight = float(self.controller.weight)
-            bmi = weight / (height ** 2)
-            messagebox.showinfo("BMI", f"Your BMI is {bmi:.2f}")
-        except ValueError:
-            messagebox.showerror("Error", "Invalid height or weight")
-
     def go_home(self):
-        pass  # Implement the home functionality
+        pass
 
-    def go_profile(self):
-        pass  # Implement the profile functionality
+    def go_settings(self):
+        pass
 
-    def go_goals(self):
-        pass  # Implement the goals functionality
+    def go_ring(self):
+        pass
 
+    def calculate_bmi(self):
+        height_m = self.controller.height / 100
+        weight_kg = self.controller.weight
+        bmi = weight_kg / (height_m ** 2)
+        messagebox.showinfo("BMI", f"Your BMI is: {bmi:.2f}")
 
 
 class RegisterWindow(tk.Frame):
@@ -263,6 +271,15 @@ class RegisterWindow(tk.Frame):
             self.controller.show_frame(LoginPage)
         else:
             messagebox.showerror("Invalid Input", f"Please enter a valid {invalid_input}.")
+
+class ProfilePage(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.configure(bg='#333333')
+
+
+
 
 if __name__ == "__main__":
     app = MainApp()

@@ -1,5 +1,5 @@
-def category(number):
-    #Determine the category based on the range in the file 
+def find_category(number):
+    #Determine the category based on the category in the file 
     if number == 0:
         return 'excellent'
     elif number == 1:
@@ -15,17 +15,21 @@ def category(number):
 
 vo2max = 58
 age = 19
-range = ''
+category = ''
 f = open('vo2maxwomen.txt', 'r')
 lines = f.readlines()
 for line in lines:
-    #Check if age range matches 
+    found = 0
+    #Check if age category matches 
     if int(line.split(';')[0].split('-')[0]) <= age <= int(line.split(';')[0].split('-')[1]):
-        #Check which vo2 max range matches and give a rating bsaed on position in file 
+        #Check which vo2 max category matches and give a rating bsaed on position in file 
+        found = 1
         for i in range(6):
-            #print (int(line.split(';')[i+1].split('-')[1])) 
             if int(line.split(';')[i+1].split('-')[0]) <= vo2max <= int(line.split(';')[i+1].split('-')[1]):
-                print ((line.split(';')[i+1].split('-')[0]))
-                range = category()
+                category = find_category(i)
+                break
             else:
-                range = 'very poor'
+                category = 'very poor'
+                break
+
+print (category)
