@@ -26,6 +26,7 @@ class MainApp(tk.Tk):
         self.frames[RegisterWindow] = RegisterWindow(parent=self, controller=self)
         self.frames[ProfilePage] = ProfilePage(parent=self,controller=self)
         self.frames[bmiPage] = bmiPage(parent=self,controller=self)
+        self.frames[vo2maxPage] = vo2maxPage(parent = self, controller=self)
         for frame in self.frames.values():
             frame.grid(row=0, column=0, sticky="nsew")
 
@@ -272,6 +273,7 @@ class RegisterWindow(tk.Frame):
         else:
             messagebox.showerror("Invalid Input", f"Please enter a valid {invalid_input}.")
 
+
 class ProfilePage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
@@ -328,7 +330,6 @@ class ProfilePage(tk.Frame):
         height = self.height_entry.get()
         weight = self.weight_entry.get()
         vo2 = self.vo2_entry.get()
-        print ("hello")
         # Update user information
         updated_line = f'{self.controller.username};{self.controller.password};{name};{age};{height};{weight};{vo2}\n'
         with open('userlogininfo.txt', 'r+') as f:
@@ -358,7 +359,15 @@ class ProfilePage(tk.Frame):
         # Show a message box to confirm the changes
         messagebox.showinfo("Changes Saved", "Your profile has been updated successfully.")
 
+class vo2maxPage(tk.Frame):    
+    
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.configure(bg='#333333')    
+
 class bmiPage(tk.Frame):
+
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
@@ -408,6 +417,14 @@ class bmiPage(tk.Frame):
 
 
         #messagebox.showinfo("BMI", f"Your BMI is: {bmi:.f}")
+    
+class vo2maxPage(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.configure(bg='#333333')
+       # self.create_text(300, 50, text="HELLO WORLD", fill="black", font=('Helvetica 15 bold'))
+
 if __name__ == "__main__":
     app = MainApp()
     app.mainloop()
