@@ -13,7 +13,7 @@ def find_category(number):
     else:
         return 'poor'
 
-vo2max = 58
+vo2max = 48
 age = 19
 category = ''
 f = open('vo2maxwomen.txt', 'r')
