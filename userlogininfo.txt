@@ -1,5 +1,6 @@
-a;a;ananya;18;Female;100.0;50.0;50
-1;2;l;3;Male;140;40;30
+mike123;mikepassword;Michael;50;Male;170;60;60
+a;a;Ananya;18;Female;160.0;50.0;50
+john123;simplepassword;John;20;Male;200;80;40
 
 
 
