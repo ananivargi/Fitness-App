@@ -6,11 +6,6 @@ from tkinter import *
 from PIL import Image, ImageTk
 from tkinter import ttk
 
-#Import Matplotlib and modules 
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import numpy as np
-
 # Parent class
 class MainApp(tk.Tk):
     # Initialise window and user attributes
@@ -18,6 +13,7 @@ class MainApp(tk.Tk):
         super().__init__()
         self.title("BodyWise Fitness App")
         self.geometry('800x800')
+        self.resizable(False, False)
         self.configure(bg='#333333')
         self.username = ''
         self.password = ''
@@ -38,7 +34,6 @@ class MainApp(tk.Tk):
         self.frames[ProfilePage] = ProfilePage(parent=self,controller=self)
         self.frames[bmiPage] = bmiPage(parent=self,controller=self)
         self.frames[vo2maxPage] = vo2maxPage(parent=self, controller=self)
-        self.frames[GoalVisualiserPage] = GoalVisualiserPage(parent=self,controller=self )
         for frame in self.frames.values():
             # Create grid for each frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -128,27 +123,29 @@ class LoginPage(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.configure(bg='#333333')
-        
+
         login_label = tk.Label(self, text="BodyWise", bg='#333333', fg="#468ce8", font=("Arial", 30))
-        login_label.grid(row=0, column=0, columnspan=2, pady=40)
-        
+        login_label.place(x=300, y=20)
+
         username_label = tk.Label(self, text="Username", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
-        username_label.grid(row=1, column=0, padx=20)
+        username_label.place(x=280, y=100)
         self.username_entry = tk.Entry(self, font=("Arial", 16))
-        self.username_entry.grid(row=1, column=1, pady=20)
-        
+        self.username_entry.place(x=430, y=100)
+
         password_label = tk.Label(self, text="Password", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
-        password_label.grid(row=2, column=0, padx=20)
+        password_label.place(x=280, y=150)  # Adjusted y-coordinate for password_label
 
         self.password_entry = tk.Entry(self, show="*", font=("Arial", 16))
-        self.password_entry.grid(row=2, column=1, pady=20)
+        self.password_entry.place(x=430, y=150)  # Adjusted y-coordinate for password_entry
 
-        
         login_button = tk.Button(self, text="Login", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.login)
-        login_button.grid(row=3, column=0, columnspan=2, pady=30)
-        
+        login_button.place(x=350, y=220)  # Centered login_button
+
         register_button = tk.Button(self, text="Register", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.register)
-        register_button.grid(row=4, column=0, columnspan=2, pady=10)
+        register_button.place(x=340, y=280)  # Centered register_button
+
+        self.intro_label = tk.Label(self, text="Welcome to BodyWise Fitness App! This application allows you to view your fitness\n statistics at a glance with a BMI calculator and VO2 Max Range calculator.\nLogin with your account or register to proceed.", bg='#333333', fg="#FFFFFF", font=("Arial", 15))
+        self.intro_label.place ( x =10, y =500)
         
     def login(self):
         '''
@@ -192,12 +189,10 @@ class HomePage(tk.Frame):
         self.profile_button = tk.Button(self.sidebar_frame, text='', bg='#468ce8', relief='flat', command=self.go_profile)
         self.bmi_button = tk.Button(self.sidebar_frame, text='', bg='#468ce8', relief='flat', command=self.go_bmi)
         self.vo2max_button = tk.Button(self.sidebar_frame, text='', bg='#468ce8', relief='flat', command=self.go_vo2max)
-        self.goal_button = tk.Button(self.sidebar_frame, text='', bg='#468ce8', relief='flat', command=self.go_goalvis)
 
         self.profile_button.grid(row=0, column=0, pady=10)
-        self.bmi_button.grid(row=1, column=0, pady=50)
+        self.bmi_button.grid(row=1, column=0, pady=20)
         self.vo2max_button.grid(row=2, column=0, pady=10)
-        self.goal_button.grid(row=3,column=0, pady=10)
 
         self.sidebar_frame.bind('<Enter>', lambda e: self.expand())
         self.sidebar_frame.bind('<Leave>', lambda e: self.contract())
@@ -236,12 +231,10 @@ class HomePage(tk.Frame):
             self.profile_button.config(text='Profile', font=("Proxima Nova", 14))
             self.bmi_button.config(text='BMI Calculator', font=("Proxima Nova", 14))
             self.vo2max_button.config(text='VO2 Max Range', font=("Proxima Nova", 14))
-            self.goal_button.config(text = 'Goal Visualiser', font=("Proxima Nova", 14))
         else:
             self.profile_button.config(text='', font=("Proxima Nova", 10))
             self.bmi_button.config(text='', font=("Proxima Nova", 10))
             self.vo2max_button.config(text='', font=("Proxima Nova", 10))
-            self.goal_button.config(text = 'Goal Visualiser', font=("Proxima Nova", 14))
 
     def update_welcome_message(self, name):
         self.welcome_label.config(text=f"Welcome, {name}!")  # Updated welcome message
@@ -256,9 +249,6 @@ class HomePage(tk.Frame):
     def go_vo2max(self):
         self.controller.frames[vo2maxPage].find_range()
         self.controller.show_frame(vo2maxPage)
-
-    def go_goalvis(self):
-        self.controller.show_frame(GoalVisualiserPage)
 
 
 
@@ -506,6 +496,7 @@ class vo2maxPage(tk.Frame):
             lines = f.readlines()
             for line in lines:
                 if found:
+                    f.close()
                     break
                 # Check if age category matches 
                 if int(line.split(';')[0].split('-')[0]) <= int(self.controller.age) <= int(line.split(';')[0].split('-')[1]):
@@ -535,74 +526,6 @@ class vo2maxPage(tk.Frame):
             return 'below average'
         else:
             return 'poor'
-
-class GoalVisualiserPage(tk.Frame):
-    def __init__(self, parent, controller):
-        super().__init__(parent)
-        self.controller = controller
-        self.configure(bg='#333333')
-
-        self.goal_sleep = tk.IntVar()
-        self.goal_calories = tk.IntVar()
-        self.goal_steps = tk.IntVar()
-        self.actual_sleep = tk.IntVar()
-        self.actual_calories = tk.IntVar()
-        self.actual_steps = tk.IntVar()
-
-        tk.Label(self, text="Goal Visualiser", bg='#333333', fg="#468ce8", font=("Arial", 30)).grid(row=0, column=0, columnspan=4, pady=20)
-
-        # Graph section
-        self.figure, self.ax = plt.subplots(figsize=(10, 5))
-        self.canvas = FigureCanvasTkAgg(self.figure, self)
-        self.canvas.get_tk_widget().grid(row=1, column=0, columnspan=4, padx=20, pady=20)
-
-        # Goal and Actual inputs
-        tk.Label(self, text="Enter Goals and Actual Values", bg='#333333', fg="#FFFFFF", font=("Arial", 16)).grid(row=2, column=0, columnspan=4, pady=20)
-
-        tk.Label(self, text="Sleep Goal (hours):", bg='#333333', fg="#FFFFFF", font=("Arial", 14)).grid(row=3, column=0, padx=10, pady=5, sticky='e')
-        tk.Entry(self, textvariable=self.goal_sleep, font=("Arial", 14)).grid(row=3, column=1, padx=10, pady=5, sticky='w')
-
-        tk.Label(self, text="Calories Burned Goal:", bg='#333333', fg="#FFFFFF", font=("Arial", 14)).grid(row=4, column=0, padx=10, pady=5, sticky='e')
-        tk.Entry(self, textvariable=self.goal_calories, font=("Arial", 14)).grid(row=4, column=1, padx=10, pady=5, sticky='w')
-
-        tk.Label(self, text="Steps Goal:", bg='#333333', fg="#FFFFFF", font=("Arial", 14)).grid(row=5, column=0, padx=10, pady=5, sticky='e')
-        tk.Entry(self, textvariable=self.goal_steps, font=("Arial", 14)).grid(row=5, column=1, padx=10, pady=5, sticky='w')
-
-        tk.Label(self, text="Actual Sleep (hours):", bg='#333333', fg="#FFFFFF", font=("Arial", 14)).grid(row=3, column=2, padx=10, pady=5, sticky='e')
-        tk.Entry(self, textvariable=self.actual_sleep, font=("Arial", 14)).grid(row=3, column=3, padx=10, pady=5, sticky='w')
-
-        tk.Label(self, text="Actual Calories Burned:", bg='#333333', fg="#FFFFFF", font=("Arial", 14)).grid(row=4, column=2, padx=10, pady=5, sticky='e')
-        tk.Entry(self, textvariable=self.actual_calories, font=("Arial", 14)).grid(row=4, column=3, padx=10, pady=5, sticky='w')
-
-        tk.Label(self, text="Actual Steps:", bg='#333333', fg="#FFFFFF", font=("Arial", 14)).grid(row=5, column=2, padx=10, pady=5, sticky='e')
-        tk.Entry(self, textvariable=self.actual_steps, font=("Arial", 14)).grid(row=5, column=3, padx=10, pady=5, sticky='w')
-
-        tk.Button(self, text="Update Graph", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.update_graph).grid(row=6, column=0, columnspan=4, pady=20)
-
-        back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.back_to_home)
-        back_button.grid(row=7, column=0, columnspan=4, pady=20)
-
-    def back_to_home(self):
-        self.controller.show_frame(HomePage)
-
-    def update_graph(self):
-        goals = [self.goal_sleep.get(), self.goal_calories.get(), self.goal_steps.get()]
-        actuals = [self.actual_sleep.get(), self.actual_calories.get(), self.actual_steps.get()]
-        categories = ['Sleep (hours)', 'Calories Burned', 'Steps Taken']
-
-        self.ax.clear()
-        y_pos = np.arange(len(categories))
-
-        self.ax.barh(y_pos - 0.2, goals, height=0.4, label='Goal', color='b')
-        self.ax.barh(y_pos + 0.2, actuals, height=0.4, label='Actual', color='r')
-
-        self.ax.set_yticks(y_pos)
-        self.ax.set_yticklabels(categories)
-        self.ax.invert_yaxis()
-        self.ax.legend()
-        self.ax.set_xlim(0, max(goals + actuals) * 1.1)
-
-        self.canvas.draw()
 
 if __name__ == "__main__":
     app = MainApp()

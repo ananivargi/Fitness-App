@@ -2,6 +2,13 @@
 
 ## Project Description 
 A fitness app in which users can create a profile, and get statistics about their BMI and V02 Max range based on their age and gender. 
+Features: 
+- User Registration and Login: Securely register and log in to your account.
+- Profile Management: Update and manage your personal health information.
+- BMI Calculation: Calculate your Body Mass Index (BMI) and view where it falls on the BMI range.
+- VO2 Max Range Determination: Determine your VO2 max range based on your profile data.
+- Interactive Sidebar Navigation: Easily navigate through different sections of the app.
+
 I have used the Python GUI Tkinter for the development of this project as it is a simple, user-friendly interface with which I have experience. I also used the Python Imaging Library (PIL) to format images onto the Tkinter window. 
 
 I particularly faced challenges with creation of the front-end as I prefer creating algorithms and back-end logic. This included making the side bar, learning how to incorporate different frames in the window, and adding/aligning images. 

@@ -13,6 +13,7 @@ class MainApp(tk.Tk):
         super().__init__()
         self.title("BodyWise Fitness App")
         self.geometry('800x800')
+        self.resizable(False, False)
         self.configure(bg='#333333')
         self.username = ''
         self.password = ''
@@ -124,7 +125,7 @@ class LoginPage(tk.Frame):
         self.configure(bg='#333333')
         
         login_label = tk.Label(self, text="BodyWise", bg='#333333', fg="#468ce8", font=("Arial", 30))
-        login_label.grid(row=0, column=0, columnspan=2, pady=40)
+        login_label.grid(row=0, column=1, columnspan=2, pady=40)
         
         username_label = tk.Label(self, text="Username", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
         username_label.grid(row=1, column=0, padx=20)
