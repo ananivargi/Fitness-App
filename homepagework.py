@@ -133,16 +133,16 @@ class LoginPage(tk.Frame):
         self.username_entry.place(x=430, y=100)
 
         password_label = tk.Label(self, text="Password", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
-        password_label.place(x=280, y=150)  # Adjusted y-coordinate for password_label
+        password_label.place(x=280, y=150) 
 
         self.password_entry = tk.Entry(self, show="*", font=("Arial", 16))
-        self.password_entry.place(x=430, y=150)  # Adjusted y-coordinate for password_entry
+        self.password_entry.place(x=430, y=150) 
 
         login_button = tk.Button(self, text="Login", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.login)
-        login_button.place(x=350, y=220)  # Centered login_button
+        login_button.place(x=350, y=220) 
 
         register_button = tk.Button(self, text="Register", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.register)
-        register_button.place(x=340, y=280)  # Centered register_button
+        register_button.place(x=340, y=280)   
 
         self.intro_label = tk.Label(self, text="Welcome to BodyWise Fitness App! This application allows you to view your fitness\n statistics at a glance with a BMI calculator and VO2 Max Range calculator.\nLogin with your account or register to proceed.", bg='#333333', fg="#FFFFFF", font=("Arial", 15))
         self.intro_label.place ( x =10, y =500)
@@ -178,66 +178,34 @@ class HomePage(tk.Frame):
         self.grid_columnconfigure(1, weight=1)  # Main content column
 
         # Welcome label
-        self.welcome_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Proxima Nova", 24))
-        self.welcome_label.place(x=200, y=50)
+        self.welcome_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Helvetica", 15))
+        self.welcome_label.grid(row=0, column=1, padx=20, pady=20, sticky='nw')
+   
 
         # Sidebar
-        self.sidebar_frame = tk.Frame(self, bg='#468ce8', width=50, height=800)  # Sidebar frame
+        self.sidebar_frame = tk.Frame(self, bg='#468ce8', width=200, height=800)  # Sidebar frame
         self.sidebar_frame.grid(row=0, column=0, rowspan=2, sticky="ns")
         self.sidebar_frame.grid_propagate(False)
 
-        self.profile_button = tk.Button(self.sidebar_frame, text='', bg='#468ce8', relief='flat', command=self.go_profile)
-        self.bmi_button = tk.Button(self.sidebar_frame, text='', bg='#468ce8', relief='flat', command=self.go_bmi)
-        self.vo2max_button = tk.Button(self.sidebar_frame, text='', bg='#468ce8', relief='flat', command=self.go_vo2max)
+        self.profile_button = tk.Button(self.sidebar_frame, text='Profile', bg='#468ce8', relief='flat', command=self.go_profile, font=("Proxima Nova", 14))
+        self.bmi_button = tk.Button(self.sidebar_frame, text='BMI Calculator', bg='#468ce8', relief='flat', command=self.go_bmi, font=("Proxima Nova", 14))
+        self.vo2max_button = tk.Button(self.sidebar_frame, text='VO2 Max Range', bg='#468ce8', relief='flat', command=self.go_vo2max, font=("Proxima Nova", 14))
 
         self.profile_button.grid(row=0, column=0, pady=10)
         self.bmi_button.grid(row=1, column=0, pady=20)
         self.vo2max_button.grid(row=2, column=0, pady=10)
 
-        self.sidebar_frame.bind('<Enter>', lambda e: self.expand())
-        self.sidebar_frame.bind('<Leave>', lambda e: self.contract())
-
         # Main content
         self.content_frame = tk.Frame(self, bg='#333333')
         self.content_frame.grid(row=1, column=1, sticky="nsew", rowspan=2)
 
-        self.cur_width = 50
-        self.max_width = 200
-        self.min_width = 50
-        self.expanded = False
-
-    # Expand sidebar
-    def expand(self):
-        if self.cur_width < self.max_width:
-            self.cur_width += 10
-            self.sidebar_frame.config(width=self.cur_width)
-            self.sidebar_frame.after(5, self.expand)
-        else:
-            self.expanded = True
-            self.fill()
-
-    # Contract sidebar
-    def contract(self):
-        if self.cur_width > self.min_width:
-            self.cur_width -= 10
-            self.sidebar_frame.config(width=self.cur_width)
-            self.sidebar_frame.after(5, self.contract)
-        else:
-            self.expanded = False
-            self.fill()
-
-    def fill(self):
-        if self.expanded:
-            self.profile_button.config(text='Profile', font=("Proxima Nova", 14))
-            self.bmi_button.config(text='BMI Calculator', font=("Proxima Nova", 14))
-            self.vo2max_button.config(text='VO2 Max Range', font=("Proxima Nova", 14))
-        else:
-            self.profile_button.config(text='', font=("Proxima Nova", 10))
-            self.bmi_button.config(text='', font=("Proxima Nova", 10))
-            self.vo2max_button.config(text='', font=("Proxima Nova", 10))
+        # Introduction text
+        #self.intro_label = tk.Label(self.content_frame, text="Navigate through the app using the side bar on the left.\nThe Profile page allows you to view and update\nyour current user details.\nThe BMI page calculates your BMI and tells you the range in which you sit.\nThe VO2 Max page uses your entered VO2 Max and,\nbased on your age and gender, calculates where you sit compared to your peers.\n Enjoy!", bg='#333333', fg="#FFFFFF", font=("Arial", 15))
+        #self.intro_label.grid(row=0, column=1, padx=20, pady=20, sticky='nw')
 
     def update_welcome_message(self, name):
-        self.welcome_label.config(text=f"Welcome, {name}!")  # Updated welcome message
+        self.welcome_label.config(text=f"Welcome, {name}!\n\nNavigate through the app using the side bar on the left.\n\nThe Profile page allows you to view and update your current user details.\n\nThe BMI page calculates your BMI and tells you the range in which you sit.\n\nThe VO2 Max page uses your entered VO2 Max and, based on your age and gender, calculates where you sit compared to your peers. Enjoy!", wraplength = 550)  # Updated welcome message
+        self.welcome_label.grid(row=0, column=1, padx=20, pady=20, sticky='nw')
 
     def go_profile(self):
         self.controller.frames[ProfilePage].show_info()
@@ -249,8 +217,6 @@ class HomePage(tk.Frame):
     def go_vo2max(self):
         self.controller.frames[vo2maxPage].find_range()
         self.controller.show_frame(vo2maxPage)
-
-
 
 
 
@@ -354,15 +320,15 @@ class ProfilePage(tk.Frame):
 
         self.age_label = tk.Label(self, text="Age:", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
         self.age_label.grid(row=2, column=0, sticky="w", padx=20)
-        self.age_entry = tk.Entry(self, font=("Arial", 16))
+        self.age_entry = tk.Entry(self, font=("Arial", 16), width=20)
         self.age_entry.grid(row=2, column=1, pady=10)
         self.age_entry.insert(0, age)  # Insert the current age into the field
 
         self.gender_label = tk.Label(self, text="Gender", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
-        self.gender_label.grid(row=3, column=0)
-        self.gender_combobox = ttk.Combobox(self, font=("Arial", 16), state="readonly")
+        self.gender_label.grid(row=3, column=0, sticky="w", padx=20)
+        self.gender_combobox = ttk.Combobox(self, font=("Arial", 16), state="readonly", width=18)
         self.gender_combobox['values'] = ('Male', 'Female')
-        self.gender_combobox.grid(row=3, column=1, pady=10)
+        self.gender_combobox.grid(row=3, column=1, pady=10, columnspan =2)
         self.gender_combobox.set(gender)
 
 
@@ -385,9 +351,9 @@ class ProfilePage(tk.Frame):
         self.vo2_entry.insert(0, str(vo2))  # Insert the current VO2 into the field
 
         submit_button = tk.Button(self, text="Submit Changes", command=self.update_profile)
-        submit_button.grid(row=8, column=0, columnspan=2)
+        submit_button.place(x=160, y=390)
         back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.back_to_home)
-        back_button.grid(row= 15, column = 0, columnspan = 1)
+        back_button.place(x=0,y=0)
         
     def back_to_home(self):
         self.controller.show_frame(HomePage)
@@ -409,6 +375,7 @@ class ProfilePage(tk.Frame):
                     f.write(updated_line)
                 else:
                     f.write(line)
+        f.close()
 
         # Update profile page with new information
         self.controller.set_user_info(self.controller.username)
@@ -446,7 +413,7 @@ class bmiPage(tk.Frame):
         self.pointer_label = ttk.Label(self, image=self.bmipointer_range_image)
 
         back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.back_to_home)
-        back_button.grid(row= 15, column = 0, columnspan = 1)
+        back_button.place(x=0, y=0)
         
     def back_to_home(self):
         self.controller.show_frame(HomePage)
@@ -474,9 +441,11 @@ class vo2maxPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.configure(bg='#333333') 
+        self.configure(bg='#333333')
+        
+        # Back button in the very left-hand corner
         back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.back_to_home)
-        back_button.grid(row= 5, column = 0, columnspan = 1)
+        back_button.place(x=0,y=0)
 
     def back_to_home(self):
         self.controller.show_frame(HomePage)
@@ -485,14 +454,14 @@ class vo2maxPage(tk.Frame):
         found = False
         if self.controller.age < 18:
             self.vo2max_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Arial", 24))
-            self.vo2max_label.pack(pady=20)
-            self.vo2max_label.config(text=f"Unfortunately you must be older than 18 years old for your Vo2 Max Range to be determined.")        
+            self.vo2max_label.place(x=40,y=20)
+            self.vo2max_label.config(text=f"Unfortunately, you must be older than 18 years old for your VO2 Max Range to be determined.")        
         else:
             category = ''
             if self.controller.gender == 'Female':
                 f = open('vo2maxwomen.txt', 'r')
             else:
-                f = open('vo2maxmen.txt','r')
+                f = open('vo2maxmen.txt', 'r')
             lines = f.readlines()
             for line in lines:
                 if found:
@@ -508,9 +477,28 @@ class vo2maxPage(tk.Frame):
                             found = True
                             break
        
-            self.vo2max_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Arial", 24))
-            self.vo2max_label.grid(row=1,column=1)
+            self.vo2max_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Helvetica", 20))
+            self.vo2max_label.place(x=50,y=50)
             self.vo2max_label.config(text=f"Your VO2 Max is {self.controller.vo2} which is {category} for {self.controller.age} years old.")
+        
+        # Explanation of VO2 Max
+        vo2max_explanation = tk.Label(self, text="VO2 Max represents the maximum rate of oxygen consumption during exercise. It is a key indicator of cardiovascular fitness and endurance performance.\n\nThe ranges are: ", bg='#333333', fg="#FFFFFF", font=("Helvetica", 18), wraplength=700, justify=tk.LEFT)
+        vo2max_explanation.place(x=50,y=200)
+
+        # VO2 Max Ranges
+        ranges = [
+            ("Excellent", "green"),
+            ("Good", "light green"),
+            ("Above Average", "yellow"),
+            ("Average", "orange"),
+            ("Below Average", "red"),
+            ("Poor", "dark red"),
+            ("Very Poor", "black")
+        ]
+
+        for i, (category, color) in enumerate(ranges):
+            range_label = tk.Label(self, text=category, bg='#333333', fg=color, font=("Arial", 14))
+            range_label.place(x=50, y = 300 + 40* (i+1))
 
     def find_category(self, number):
         # Determine the category based on the category in the file 
