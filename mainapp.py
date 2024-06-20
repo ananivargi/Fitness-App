@@ -11,10 +11,13 @@ class MainApp(tk.Tk):
     # Initialise window and user attributes
     def __init__(self):
         super().__init__()
+        # Create window 
         self.title("BodyWise Fitness App")
         self.geometry('800x800')
+        # Make window non-resizable 
         self.resizable(False, False)
         self.configure(bg='#333333')
+        # Initialise attibutes of class that represnt user info
         self.username = ''
         self.password = ''
         self.name = ''
@@ -27,6 +30,7 @@ class MainApp(tk.Tk):
         self.create_frames()
         self.show_frame(LoginPage)
 
+    # Create dictionary with each value being an instance of the class representing different frames
     def create_frames(self):
         self.frames[LoginPage] = LoginPage(parent=self, controller=self)
         self.frames[HomePage] = HomePage(parent=self, controller=self)
@@ -64,12 +68,18 @@ class MainApp(tk.Tk):
 
     # Get attributes from text file
     def set_user_info(self, username):
+        '''
+        Takes username and sets attributes by reading user info file 
+        '''
+
         with open('userlogininfo.txt', 'r') as f:
             lines = f.readlines()
             for line in lines:
+                # Check if line contains user data 
                 if line.split(';')[0] == username:
                     self.username = (line.split(';')[0])
                     self.password = line.split(';')[1]
+                    # Capitalise first letter of first name
                     self.name = str(line.split(';')[2]).capitalize()
                     self.age = int(line.split(';')[3])
                     self.gender = (line.split(';')[4])
@@ -124,6 +134,8 @@ class LoginPage(tk.Frame):
         self.controller = controller
         self.configure(bg='#333333')
 
+        # Initialise screen with labels and buttons 
+
         login_label = tk.Label(self, text="BodyWise", bg='#333333', fg="#468ce8", font=("Arial", 30))
         login_label.place(x=300, y=20)
 
@@ -155,6 +167,7 @@ class LoginPage(tk.Frame):
         username = self.username_entry.get()
         password = self.password_entry.get()
         user_info = self.controller.check_login(username, password)
+        # Check both inputs were valid 
         if user_info == 'usernamepassword':
             self.controller.set_user_info(username)
             self.controller.frames[HomePage].update_welcome_message(self.controller.name)
@@ -174,8 +187,10 @@ class HomePage(tk.Frame):
 
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
-        self.grid_columnconfigure(0, weight=0)  # Sidebar column
-        self.grid_columnconfigure(1, weight=1)  # Main content column
+        # Sidebar column
+        self.grid_columnconfigure(0, weight=0)  
+        # Main content column
+        self.grid_columnconfigure(1, weight=1)  
 
         # Welcome label
         self.welcome_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Helvetica", 15))
@@ -187,6 +202,7 @@ class HomePage(tk.Frame):
         self.sidebar_frame.grid(row=0, column=0, rowspan=2, sticky="ns")
         self.sidebar_frame.grid_propagate(False)
 
+        # Create sidebar buttons 
         self.profile_button = tk.Button(self.sidebar_frame, text='Profile', bg='#468ce8', relief='flat', command=self.go_profile, font=("Proxima Nova", 14))
         self.bmi_button = tk.Button(self.sidebar_frame, text='BMI Calculator', bg='#468ce8', relief='flat', command=self.go_bmi, font=("Proxima Nova", 14))
         self.vo2max_button = tk.Button(self.sidebar_frame, text='VO2 Max Range', bg='#468ce8', relief='flat', command=self.go_vo2max, font=("Proxima Nova", 14))
@@ -199,22 +215,22 @@ class HomePage(tk.Frame):
         self.content_frame = tk.Frame(self, bg='#333333')
         self.content_frame.grid(row=1, column=1, sticky="nsew", rowspan=2)
 
-        # Introduction text
-        #self.intro_label = tk.Label(self.content_frame, text="Navigate through the app using the side bar on the left.\nThe Profile page allows you to view and update\nyour current user details.\nThe BMI page calculates your BMI and tells you the range in which you sit.\nThe VO2 Max page uses your entered VO2 Max and,\nbased on your age and gender, calculates where you sit compared to your peers.\n Enjoy!", bg='#333333', fg="#FFFFFF", font=("Arial", 15))
-        #self.intro_label.grid(row=0, column=1, padx=20, pady=20, sticky='nw')
-
     def update_welcome_message(self, name):
+        # Show welcome message 
         self.welcome_label.config(text=f"Welcome, {name}!\n\nNavigate through the app using the side bar on the left.\n\nThe Profile page allows you to view and update your current user details.\n\nThe BMI page calculates your BMI and tells you the range in which you sit.\n\nThe VO2 Max page uses your entered VO2 Max and, based on your age and gender, calculates where you sit compared to your peers. Enjoy!", wraplength = 550)  # Updated welcome message
         self.welcome_label.grid(row=0, column=1, padx=20, pady=20, sticky='nw')
 
     def go_profile(self):
+        # Go to Profile Page 
         self.controller.frames[ProfilePage].show_info()
         self.controller.show_frame(ProfilePage)
 
     def go_bmi(self):
+        # Go to BMI Page 
         self.controller.show_frame(bmiPage)
 
     def go_vo2max(self):
+        # Go to VO2 Max page 
         self.controller.frames[vo2maxPage].find_range()
         self.controller.show_frame(vo2maxPage)
 
@@ -277,6 +293,7 @@ class RegisterWindow(tk.Frame):
         self.register_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
 
     def register_user(self):
+        # Get each data field 
         username = self.new_username_entry.get()
         password = self.new_password_entry.get()
         name = self.name_entry.get()
@@ -286,11 +303,14 @@ class RegisterWindow(tk.Frame):
         vo2 = self.vo2_entry.get()
         gender = self.gender_combobox.get()
 
+        # Check what entry is invalid (if any) and set to variable 
         invalid_input = self.controller.check_inputs(username, password, name, age, gender, height, weight, vo2)
         if invalid_input is None:
+            # Correct inputs 
             messagebox.showinfo("Registration Successful", "Welcome, {}".format(username))
             self.controller.show_frame(HomePage)
         else:
+            # One or more inputs incorrect
             messagebox.showerror("Invalid Input", f"Please enter a valid {invalid_input}.")
 
 
@@ -302,7 +322,10 @@ class ProfilePage(tk.Frame):
         self.configure(bg='#333333')
         
     def show_info(self):
-    # Get the current user information
+        '''
+        This method gets current user data and displays in the entry fields where users can change data 
+        '''
+        # Get the current user information
         name = self.controller.name
         age = self.controller.age
         gender = self.controller.gender
@@ -359,6 +382,9 @@ class ProfilePage(tk.Frame):
         self.controller.show_frame(HomePage)
 
     def update_profile(self):
+        '''
+        Get entries from fields when users submit changes and edit their existing data file with the new information
+        '''
         name = self.name_entry.get()
         age = self.age_entry.get()
         gender = self.gender_combobox.get()
@@ -401,38 +427,63 @@ class bmiPage(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.configure(bg='#333333')
-        self.bmi_button = tk.Button(self,text="Calculate BMI", bg='#333333', fg="#FFFFFF", font=("Arial", 24), command=self.calculate_bmi)
-        self.bmi_button.grid(row=5, column=0, pady=20, padx=20)
-        self.original_image = Image.open('bmirangeimage.png').resize((800,100))
+        
+        # Back button
+        back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Helvetica", 16), command=self.back_to_home)
+        back_button.place(x=0,y=0)
+
+        # Explanation of BMI
+        bmi_explanation = tk.Label(self, text="BMI (Body Mass Index) represents a measure of body fat based on your height and weight. It is used as a screening tool to categorise individuals (shown below). Press the button and a pointer will popup that corresponds to your range.", bg='#333333', fg="#FFFFFF", font=("Arial", 14), wraplength=600, justify=tk.LEFT)
+        bmi_explanation.grid(row=1, column=0, columnspan=2, padx=20, pady=40)
+
+        # Disclaimer
+        disclaimer_label = tk.Label(self, text="Disclaimer: BMI does not take into account muscle mass, bone density, overall body composition, and other factors. It is typically used for individuals who do not engage in heavy physical activities or bodybuilders.", bg='#333333', fg="#FFFFFF", font=("Arial", 12), wraplength=600, justify=tk.LEFT)
+        disclaimer_label.place(x=70,y=600)
+
+        # Calculate BMI button
+        self.bmi_button = tk.Button(self, text="Calculate BMI", bg='#468ce8', fg="#FFFFFF", font=("Helvetica", 15), command=self.calculate_bmi)
+        self.bmi_button.place(x=320,y=320)
+
+        # BMI range image
+        self.original_image = Image.open('bmirangeimage.png').resize((780,100))
         self.bmi_range_image = ImageTk.PhotoImage(self.original_image)
         self.pic_label = ttk.Label(self, image=self.bmi_range_image)
-        self.pic_label.grid()
-        
+        self.pic_label.grid(row=6, column=0, columnspan=2, pady=20)
+
+        # Pointer image
         self.pointer_image = Image.open('gaugepointer.png').resize((80,50))
         self.bmipointer_range_image = ImageTk.PhotoImage(self.pointer_image)
         self.pointer_label = ttk.Label(self, image=self.bmipointer_range_image)
 
-        back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.back_to_home)
-        back_button.place(x=0, y=0)
-        
     def back_to_home(self):
         self.controller.show_frame(HomePage)
         
-        
     def calculate_bmi(self):
+        '''
+        Calculates BMI, displays pointer in correct position and displays BMI 
+        '''
         height_m = self.controller.height / 100
         weight_kg = self.controller.weight
-        bmi = round(weight_kg / (height_m ** 2), 1) # round to 1 dp
+        # Calculate BMI, rounding to 1 d.p
+        bmi = round(weight_kg / (height_m ** 2), 1)
         if bmi < 18.5:
-            self.pointer_label.place(x = 50, y = 50) 
+            # Pointer at underweight 
+            self.pointer_label.place(x=30, y=140) 
         elif 18.5 <= bmi <= 24.9:
-            self.pointer_label.place(x = 220, y = 50) 
+            # Pointer at healthy 
+            self.pointer_label.place(x=200, y=140) 
         elif 25 <= bmi <= 29.9:
-            self.pointer_label.place(x = 380, y = 50 )
+            # Pointer at overweight  
+            self.pointer_label.place(x=360, y=140)
         elif 30 <= bmi <= 39.9:
-            self.pointer_label.place(x = 520, y = 50)
+            # Pointer at obese 
+            self.pointer_label.place(x=500, y=140)
         else:
-            self.pointer_label.place(x = 690, y = 50)
+            # Pointer at severely obese 
+            self.pointer_label.place(x=660, y=140)
+        # Display calculated BMI 
+        self.bmi_label= tk.Label(text = f"Your BMI is {bmi}", font =("Helvetica", 15))
+        self.bmi_label.place(x=330,y=350)
 
 
         #messagebox.showinfo("BMI", f"Your BMI is: {bmi:.f}")
