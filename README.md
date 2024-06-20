@@ -34,9 +34,26 @@ To run this project, you need to have Python 3.x installed on your machine along
 
 
 ### Running the Application
-After these dependencies are installed, the application can be run by either pressing the run button on the 'mainapp.py' file, or executing the following command in the Terminal:|
+After these dependencies are installed, the application can be run by executing the following command in the Terminal:|
 
     ```bash
     python mainapp.py
     ```
 
+## User Guide 
+When first using the app, users will need to create an account by pressing 'Register'. This will 
+take them to a page that allows them to enter personal details and, upon entering all fields correctly, 
+they will have an account with which they can 'Login' the next time they use the application. 
+
+Following instructions on the screen will allow for ease of navigation, but each page is summarised below as well.
+Profile Page: Click on the button labelled 'Profile' to access. This page allows you to view your personal details at a glance and make any changes. If you are unsure of your VO2 Max, please just enter a random number within this range and proceed as normal. Upon pressing 'Submit', if all the values for the fields are correct, the file storing your data will be updated. If there is one or more incorrect value, an error message will popup that details the field in which the error was. 
+
+BMI Page: Click on the button labelled 'BMI Page' to access. Users are met with information about BMI, and a disclaimer. There is an image which demonstrates the ranges one may fall in, and what that means e.g. a BMI < 18.5 is underweight. Press the 'Calculate BMI' button and a pointer will appear that shows the range you are in, as well as a text that tells you your BMI. If in one task you have changed your profile information and want to see your new BMI, please press the button again and it should update automatically.
+
+VO2 Max Page: Click on the button labelled 'VO2 Max Page to access. Your VO2 Max range (ie where you sit for your age and gender based on provided VO2 Max (the efficiency with which you can take in oxygen ranging roughly from 10-100)). 
+
+Buttons: All buttons are labelled with their functionality, and the back buttons always take you to the previous page (which is either the Login Page or the Home Page).
+
+Please enjoy using my project!
+Kind regards,
+Ananya Nivargi

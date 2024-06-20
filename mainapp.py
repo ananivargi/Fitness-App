@@ -34,7 +34,7 @@ class MainApp(tk.Tk):
     def create_frames(self):
         self.frames[LoginPage] = LoginPage(parent=self, controller=self)
         self.frames[HomePage] = HomePage(parent=self, controller=self)
-        self.frames[RegisterWindow] = RegisterWindow(parent=self, controller=self)
+        self.frames[RegisterPage] = RegisterPage(parent=self, controller=self)
         self.frames[ProfilePage] = ProfilePage(parent=self,controller=self)
         self.frames[bmiPage] = bmiPage(parent=self,controller=self)
         self.frames[vo2maxPage] = vo2maxPage(parent=self, controller=self)
@@ -64,6 +64,7 @@ class MainApp(tk.Tk):
                     # Check the corresponding password
                     if line.split(';')[1] == password:
                         value += 'password'
+        f.close()
         return value
 
     # Get attributes from text file
@@ -86,9 +87,10 @@ class MainApp(tk.Tk):
                     self.height = float(line.split(';')[5])
                     self.weight = float(line.split(';')[6])
                     self.vo2 = int(line.split(';')[7])
+        f.close()
     
     # Check all fields are valid 
-    def check_inputs(self, username, password, name, age, gender, height, weight, vo2):
+    def check_inputs(self, username, password, name, age, gender, height, weight, vo2, add):
         '''
         Checks all fields are valid:
         Name --> Must only contain letters
@@ -97,7 +99,7 @@ class MainApp(tk.Tk):
         Weight --> Must be between 20 and 500 kg 
         Vo2 Max --> Must be between 10 and 90
         Returns name of first invalid field (None returned if no error)
-        Writes data line to userdata text file
+        Writes data line to userdata text file if 'add' is true 
         '''
         if not name.isalpha():
             return 'name'
@@ -122,10 +124,12 @@ class MainApp(tk.Tk):
         except ValueError:
             return 'vo2 max'
         else:
-            with open('userlogininfo.txt', 'a') as f:
-                # Write data line to file
-                f.write(f'{username};{password};{name};{age};{gender};{height};{weight};{vo2}\n')
-            f.close()
+            if add:
+                with open('userlogininfo.txt', 'a') as f:
+                    
+                    # Write data line to file
+                    f.write(f'{username};{password};{name};{age};{gender};{height};{weight};{vo2}\n')
+                f.close()
         return None
 
 class LoginPage(tk.Frame):
@@ -136,27 +140,27 @@ class LoginPage(tk.Frame):
 
         # Initialise screen with labels and buttons 
 
-        login_label = tk.Label(self, text="BodyWise", bg='#333333', fg="#468ce8", font=("Arial", 30))
+        login_label = tk.Label(self, text="BodyWise", bg='#333333', fg="#468ce8", font=("Helvetica", 30))
         login_label.place(x=300, y=20)
 
-        username_label = tk.Label(self, text="Username", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        username_label = tk.Label(self, text="Username", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         username_label.place(x=280, y=100)
-        self.username_entry = tk.Entry(self, font=("Arial", 16))
+        self.username_entry = tk.Entry(self, font=("Helvetica", 16))
         self.username_entry.place(x=430, y=100)
 
-        password_label = tk.Label(self, text="Password", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        password_label = tk.Label(self, text="Password", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         password_label.place(x=280, y=150) 
 
-        self.password_entry = tk.Entry(self, show="*", font=("Arial", 16))
+        self.password_entry = tk.Entry(self, show="*", font=("Helvetica", 16))
         self.password_entry.place(x=430, y=150) 
 
-        login_button = tk.Button(self, text="Login", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.login)
+        login_button = tk.Button(self, text="Login", bg="#468ce8", fg="#FFFFFF", font=("Helvetica", 16), command=self.login)
         login_button.place(x=350, y=220) 
 
-        register_button = tk.Button(self, text="Register", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.register)
+        register_button = tk.Button(self, text="Register", bg="#468ce8", fg="#FFFFFF", font=("Helvetica", 16), command=self.register)
         register_button.place(x=340, y=280)   
 
-        self.intro_label = tk.Label(self, text="Welcome to BodyWise Fitness App! This application allows you to view your fitness\n statistics at a glance with a BMI calculator and VO2 Max Range calculator.\nLogin with your account or register to proceed.", bg='#333333', fg="#FFFFFF", font=("Arial", 15))
+        self.intro_label = tk.Label(self, text="Welcome to BodyWise Fitness App! This application allows you to view your fitness\n statistics at a glance with a BMI calculator and VO2 Max Range calculator.\nLogin with your account or register to proceed.", bg='#333333', fg="#FFFFFF", font=("Helvetica", 15), justify=tk.LEFT)
         self.intro_label.place ( x =10, y =500)
         
     def login(self):
@@ -177,7 +181,7 @@ class LoginPage(tk.Frame):
 
     # Show register frame
     def register(self):
-        self.controller.show_frame(RegisterWindow)
+        self.controller.show_frame(RegisterPage)
 
 class HomePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -236,7 +240,7 @@ class HomePage(tk.Frame):
 
 
 
-class RegisterWindow(tk.Frame):
+class RegisterPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
@@ -246,51 +250,55 @@ class RegisterWindow(tk.Frame):
 
         # Enable field to get user data 
 
-        new_username_label = tk.Label(self.register_frame, text="Username", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        new_username_label = tk.Label(self.register_frame, text="Username", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         new_username_label.grid(row=0, column=0)
-        self.new_username_entry = tk.Entry(self.register_frame, font=("Arial", 16))
+        self.new_username_entry = tk.Entry(self.register_frame, font=("Helvetica", 16))
         self.new_username_entry.grid(row=0, column=1, pady=10)
 
-        new_password_label = tk.Label(self.register_frame, text="Password", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        new_password_label = tk.Label(self.register_frame, text="Password", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         new_password_label.grid(row=1, column=0)
-        self.new_password_entry = tk.Entry(self.register_frame, show="*", font=("Arial", 16))
+        self.new_password_entry = tk.Entry(self.register_frame, show="*", font=("Helvetica", 16))
         self.new_password_entry.grid(row=1, column=1, pady=10)
 
-        name_label = tk.Label(self.register_frame, text="Name", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        name_label = tk.Label(self.register_frame, text="Name", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         name_label.grid(row=2, column=0)
-        self.name_entry = tk.Entry(self.register_frame, font=("Arial", 16))
+        self.name_entry = tk.Entry(self.register_frame, font=("Helvetica", 16))
         self.name_entry.grid(row=2, column=1, pady=10)
 
-        age_label = tk.Label(self.register_frame, text="Age", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        age_label = tk.Label(self.register_frame, text="Age", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         age_label.grid(row=3, column=0)
-        self.age_entry = tk.Entry(self.register_frame, font=("Arial", 16))
+        self.age_entry = tk.Entry(self.register_frame, font=("Helvetica", 16))
         self.age_entry.grid(row=3, column=1, pady=10)
 
-        height_label = tk.Label(self.register_frame, text="Height (cm)", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        height_label = tk.Label(self.register_frame, text="Height (cm)", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         height_label.grid(row=4, column=0)
-        self.height_entry = tk.Entry(self.register_frame, font=("Arial", 16))
+        self.height_entry = tk.Entry(self.register_frame, font=("Helvetica", 16))
         self.height_entry.grid(row=4, column=1, pady=10)
 
-        weight_label = tk.Label(self.register_frame, text="Weight (kg)", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        weight_label = tk.Label(self.register_frame, text="Weight (kg)", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         weight_label.grid(row=5, column=0)
-        self.weight_entry = tk.Entry(self.register_frame, font=("Arial", 16))
+        self.weight_entry = tk.Entry(self.register_frame, font=("Helvetica", 16))
         self.weight_entry.grid(row=5, column=1, pady=10)
 
-        vo2_label = tk.Label(self.register_frame, text="VO2 Max", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        vo2_label = tk.Label(self.register_frame, text="VO2 Max", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         vo2_label.grid(row=6, column=0)
-        self.vo2_entry = tk.Entry(self.register_frame, font=("Arial", 16))
+        self.vo2_entry = tk.Entry(self.register_frame, font=("Helvetica", 16))
         self.vo2_entry.grid(row=6, column=1, pady=10)
 
-        gender_label = tk.Label(self.register_frame, text="Gender", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        gender_label = tk.Label(self.register_frame, text="Gender", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         gender_label.grid(row=7, column=0)
-        self.gender_combobox = ttk.Combobox(self.register_frame, font=("Arial", 16), state="readonly")
+        self.gender_combobox = ttk.Combobox(self.register_frame, font=("Helvetica", 16), state="readonly")
         self.gender_combobox['values'] = ('Male', 'Female')
         self.gender_combobox.grid(row=7, column=1, pady=10)
 
-        register_button = tk.Button(self.register_frame, text="Register", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.register_user)
+        register_button = tk.Button(self.register_frame, text="Register", bg="#468ce8", fg="#FFFFFF", font=("Helvetica", 16), command=self.register_user)
         register_button.grid(row=8, column=0, columnspan=2, pady=20)
+        
+        back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Helvetica", 16), command=self.back_to_login)
+        back_button.place(x=720,y=0)
 
         self.register_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        
 
     def register_user(self):
         # Get each data field 
@@ -304,16 +312,19 @@ class RegisterWindow(tk.Frame):
         gender = self.gender_combobox.get()
 
         # Check what entry is invalid (if any) and set to variable 
-        invalid_input = self.controller.check_inputs(username, password, name, age, gender, height, weight, vo2)
+        invalid_input = self.controller.check_inputs(username, password, name, age, gender, height, weight, vo2, True)
         if invalid_input is None:
             # Correct inputs 
+            self.controller.set_user_info(username)
             messagebox.showinfo("Registration Successful", "Welcome, {}".format(username))
+            self.controller.frames[HomePage].update_welcome_message(self.controller.name)
             self.controller.show_frame(HomePage)
         else:
             # One or more inputs incorrect
             messagebox.showerror("Invalid Input", f"Please enter a valid {invalid_input}.")
 
-
+    def back_to_login(self):
+        self.controller.show_frame(LoginPage)
 
 class ProfilePage(tk.Frame):
     def __init__(self, parent, controller):
@@ -332,50 +343,50 @@ class ProfilePage(tk.Frame):
         height = self.controller.height
         weight = self.controller.weight
         vo2 = self.controller.vo2
-        profile_label = tk.Label(self, text="Profile", bg='#333333', fg="#468ce8", font=("Arial", 30))
+        profile_label = tk.Label(self, text="Profile", bg='#333333', fg="#468ce8", font=("Helvetica", 30))
         profile_label.grid(row=0, column=0, columnspan=2, pady=20)
 
-        self.name_label = tk.Label(self, text="Name:", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        self.name_label = tk.Label(self, text="Name:", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         self.name_label.grid(row=1, column=0, sticky="w", padx=20)
-        self.name_entry = tk.Entry(self, font=("Arial", 16))
+        self.name_entry = tk.Entry(self, font=("Helvetica", 16))
         self.name_entry.grid(row=1, column=1, pady=10)
         self.name_entry.insert(0, name)  
 
-        self.age_label = tk.Label(self, text="Age:", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        self.age_label = tk.Label(self, text="Age:", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         self.age_label.grid(row=2, column=0, sticky="w", padx=20)
-        self.age_entry = tk.Entry(self, font=("Arial", 16), width=20)
+        self.age_entry = tk.Entry(self, font=("Helvetica", 16), width=20)
         self.age_entry.grid(row=2, column=1, pady=10)
         self.age_entry.insert(0, age)  # Insert the current age into the field
 
-        self.gender_label = tk.Label(self, text="Gender", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        self.gender_label = tk.Label(self, text="Gender", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         self.gender_label.grid(row=3, column=0, sticky="w", padx=20)
-        self.gender_combobox = ttk.Combobox(self, font=("Arial", 16), state="readonly", width=18)
+        self.gender_combobox = ttk.Combobox(self, font=("Helvetica", 16), state="readonly", width=18)
         self.gender_combobox['values'] = ('Male', 'Female')
         self.gender_combobox.grid(row=3, column=1, pady=10, columnspan =2)
         self.gender_combobox.set(gender)
 
 
-        self.height_label = tk.Label(self, text="Height (cm):", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        self.height_label = tk.Label(self, text="Height (cm):", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         self.height_label.grid(row=4, column=0, sticky="w", padx=20)
-        self.height_entry = tk.Entry(self, font=("Arial", 16))
+        self.height_entry = tk.Entry(self, font=("Helvetica", 16))
         self.height_entry.grid(row=4, column=1, pady=10)
         self.height_entry.insert(0, str(height))  # Insert the current height into the field
 
-        self.weight_label = tk.Label(self, text="Weight (kg):", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        self.weight_label = tk.Label(self, text="Weight (kg):", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         self.weight_label.grid(row=5, column=0, sticky="w", padx=20)
-        self.weight_entry = tk.Entry(self, font=("Arial", 16))
+        self.weight_entry = tk.Entry(self, font=("Helvetica", 16))
         self.weight_entry.grid(row=5, column=1, pady=10)
         self.weight_entry.insert(0, str(weight))  # Insert the current weight into the field
 
-        self.vo2_label = tk.Label(self, text="VO2 Max:", bg='#333333', fg="#FFFFFF", font=("Arial", 16))
+        self.vo2_label = tk.Label(self, text="VO2 Max:", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         self.vo2_label.grid(row=6, column=0, sticky="w", padx=20)
-        self.vo2_entry = tk.Entry(self, font=("Arial", 16))
+        self.vo2_entry = tk.Entry(self, font=("Helvetica", 16))
         self.vo2_entry.grid(row=6, column=1, pady=10)
         self.vo2_entry.insert(0, str(vo2))  # Insert the current VO2 into the field
 
         submit_button = tk.Button(self, text="Submit Changes", command=self.update_profile)
         submit_button.place(x=160, y=390)
-        back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.back_to_home)
+        back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Helvetica", 16), command=self.back_to_home)
         back_button.place(x=0,y=0)
         
     def back_to_home(self):
@@ -391,35 +402,39 @@ class ProfilePage(tk.Frame):
         height = self.height_entry.get()
         weight = self.weight_entry.get()
         vo2 = self.vo2_entry.get()
-        # Update user information
-        updated_line = f'{self.controller.username};{self.controller.password};{name};{age};{gender};{height};{weight};{vo2}\n'
-        with open('userlogininfo.txt', 'r+') as f:
-            lines = f.readlines()
-            f.seek(0)
-            for line in lines:
-                if line.split(';')[0] == self.controller.username:
-                    f.write(updated_line)
-                else:
-                    f.write(line)
-        f.close()
+        error = self.controller.check_inputs(self.controller.username, self.controller.password,name,age,gender,height,weight,vo2, False)
+        if not(error):
+            # Update user information
+            updated_line = f'{self.controller.username};{self.controller.password};{name};{age};{gender};{height};{weight};{vo2}\n'
+            with open('userlogininfo.txt', 'r+') as f:
+                lines = f.readlines()
+                f.seek(0)
+                for line in lines:
+                    if line.split(';')[0] == self.controller.username:
+                        f.write(updated_line)
+                    else:
+                        f.write(line)
+            f.close()
 
-        # Update profile page with new information
-        self.controller.set_user_info(self.controller.username)
-        self.name_entry.delete(0, tk.END)
-        self.name_entry.insert(0, name)
-        self.age_entry.delete(0, tk.END)
-        self.age_entry.insert(0, age)
-        self.gender_combobox.delete(0, tk.END)
-        self.gender_combobox.insert(0, gender)
-        self.height_entry.delete(0, tk.END)
-        self.height_entry.insert(0, height)
-        self.weight_entry.delete(0, tk.END)
-        self.weight_entry.insert(0, weight)
-        self.vo2_entry.delete(0, tk.END)
-        self.vo2_entry.insert(0, vo2)
+            # Update profile page with new information
+            self.controller.set_user_info(self.controller.username)
+            self.name_entry.delete(0, tk.END)
+            self.name_entry.insert(0, name)
+            self.age_entry.delete(0, tk.END)
+            self.age_entry.insert(0, age)
+            self.gender_combobox.delete(0, tk.END)
+            self.gender_combobox.insert(0, gender)
+            self.height_entry.delete(0, tk.END)
+            self.height_entry.insert(0, height)
+            self.weight_entry.delete(0, tk.END)
+            self.weight_entry.insert(0, weight)
+            self.vo2_entry.delete(0, tk.END)
+            self.vo2_entry.insert(0, vo2)
 
-        # Show a message box to confirm the changes
-        messagebox.showinfo("Changes Saved", "Your profile has been updated successfully.")
+            # Show a message box to confirm the changes
+            messagebox.showinfo("Changes Saved", "Your profile has been updated successfully.")
+        else:
+            messagebox.showinfo("Unsuccessful", f"Please enter a valid input for {error}.")
 
 class bmiPage(tk.Frame):
 
@@ -433,11 +448,11 @@ class bmiPage(tk.Frame):
         back_button.place(x=0,y=0)
 
         # Explanation of BMI
-        bmi_explanation = tk.Label(self, text="BMI (Body Mass Index) represents a measure of body fat based on your height and weight. It is used as a screening tool to categorise individuals (shown below). Press the button and a pointer will popup that corresponds to your range.", bg='#333333', fg="#FFFFFF", font=("Arial", 14), wraplength=600, justify=tk.LEFT)
+        bmi_explanation = tk.Label(self, text="BMI (Body Mass Index) represents a measure of body fat based on your height and weight. It is used as a screening tool to categorise individuals (shown below). Press the button and a pointer will popup that corresponds to your range.", bg='#333333', fg="#FFFFFF", font=("Helvetica", 14), wraplength=600, justify=tk.LEFT)
         bmi_explanation.grid(row=1, column=0, columnspan=2, padx=20, pady=40)
 
         # Disclaimer
-        disclaimer_label = tk.Label(self, text="Disclaimer: BMI does not take into account muscle mass, bone density, overall body composition, and other factors. It is typically used for individuals who do not engage in heavy physical activities or bodybuilders.", bg='#333333', fg="#FFFFFF", font=("Arial", 12), wraplength=600, justify=tk.LEFT)
+        disclaimer_label = tk.Label(self, text="Disclaimer: BMI does not take into account muscle mass, bone density, overall body composition, and other factors. It is typically used for individuals who do not engage in heavy physical activities or bodybuilders.", bg='#333333', fg="#FFFFFF", font=("Helvetica", 12), wraplength=600, justify=tk.LEFT)
         disclaimer_label.place(x=70,y=600)
 
         # Calculate BMI button
@@ -483,7 +498,7 @@ class bmiPage(tk.Frame):
             self.pointer_label.place(x=660, y=140)
         # Display calculated BMI 
         self.bmi_label= tk.Label(text = f"Your BMI is {bmi}", font =("Helvetica", 15))
-        self.bmi_label.place(x=330,y=350)
+        self.bmi_label.place(x=320,y=370)
 
 
         #messagebox.showinfo("BMI", f"Your BMI is: {bmi:.f}")
@@ -495,7 +510,7 @@ class vo2maxPage(tk.Frame):
         self.configure(bg='#333333')
         
         # Back button in the very left-hand corner
-        back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Arial", 16), command=self.back_to_home)
+        back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Helvetica", 16), command=self.back_to_home)
         back_button.place(x=0,y=0)
 
     def back_to_home(self):
@@ -504,7 +519,7 @@ class vo2maxPage(tk.Frame):
     def find_range(self):
         found = False
         if self.controller.age < 18:
-            self.vo2max_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Arial", 24))
+            self.vo2max_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Helvetica", 24))
             self.vo2max_label.place(x=40,y=20)
             self.vo2max_label.config(text=f"Unfortunately, you must be older than 18 years old for your VO2 Max Range to be determined.")        
         else:
@@ -548,7 +563,7 @@ class vo2maxPage(tk.Frame):
         ]
 
         for i, (category, color) in enumerate(ranges):
-            range_label = tk.Label(self, text=category, bg='#333333', fg=color, font=("Arial", 14))
+            range_label = tk.Label(self, text=category, bg='#333333', fg=color, font=("Helvetica", 14))
             range_label.place(x=50, y = 300 + 40* (i+1))
 
     def find_category(self, number):

@@ -1,8 +1,5 @@
 mike123;mikepassword;Michael;50;Male;170;60;60
-a;a;Ananya;18;Female;140.0;50.0;1
+a;a;Ananya;18;Female;160.0;50.0;50
 john123;simplepassword;John;20;Male;200;80;40
 
-
-
-
-
+asdf;sixine;ananya;69;Male;69;69;69
