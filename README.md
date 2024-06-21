@@ -54,6 +54,11 @@ VO2 Max Page: Click on the button labelled 'VO2 Max Page to access. Your VO2 Max
 
 Buttons: All buttons are labelled with their functionality, and the back buttons always take you to the previous page (which is either the Login Page or the Home Page).
 
+# Additional Files
+The additional three files: bargraphs.ipynb, bmicalc.py, and vo2maxrangecalc.py represent the ASCII development of the three pages listed above. 
+
+The goalvisualiser.py includes a basic bar graph creation in Tkinter that I decided not to incorporate into my project because it wasn't user-friendly.
+
 Please enjoy using my project!
 Kind regards,
 Ananya Nivargi

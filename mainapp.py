@@ -32,6 +32,9 @@ class MainApp(tk.Tk):
 
     # Create dictionary with each value being an instance of the class representing different frames
     def create_frames(self):
+        '''
+        Create a dictionary with the classes as keys and instances as values
+        '''
         self.frames[LoginPage] = LoginPage(parent=self, controller=self)
         self.frames[HomePage] = HomePage(parent=self, controller=self)
         self.frames[RegisterPage] = RegisterPage(parent=self, controller=self)
@@ -160,8 +163,8 @@ class LoginPage(tk.Frame):
         register_button = tk.Button(self, text="Register", bg="#468ce8", fg="#FFFFFF", font=("Helvetica", 16), command=self.register)
         register_button.place(x=340, y=280)   
 
-        self.intro_label = tk.Label(self, text="Welcome to BodyWise Fitness App! This application allows you to view your fitness\n statistics at a glance with a BMI calculator and VO2 Max Range calculator.\nLogin with your account or register to proceed.", bg='#333333', fg="#FFFFFF", font=("Helvetica", 15), justify=tk.LEFT)
-        self.intro_label.place ( x =10, y =500)
+        #self.intro_label = tk.Label(self, text="Welcome to BodyWise Fitness App! This application allows you to view your fitness\n statistics at a glance with a BMI calculator and VO2 Max Range calculator.\nLogin with your account or register to proceed.", bg='#333333', fg="#FFFFFF", font=("Helvetica", 15), justify=tk.LEFT)
+        #self.intro_label.place ( x =10, y =500)
         
     def login(self):
         '''
@@ -346,6 +349,8 @@ class ProfilePage(tk.Frame):
         profile_label = tk.Label(self, text="Profile", bg='#333333', fg="#468ce8", font=("Helvetica", 30))
         profile_label.grid(row=0, column=0, columnspan=2, pady=20)
 
+
+        # Create entry fields with existing data shown
         self.name_label = tk.Label(self, text="Name:", bg='#333333', fg="#FFFFFF", font=("Helvetica", 16))
         self.name_label.grid(row=1, column=0, sticky="w", padx=20)
         self.name_entry = tk.Entry(self, font=("Helvetica", 16))
@@ -384,8 +389,11 @@ class ProfilePage(tk.Frame):
         self.vo2_entry.grid(row=6, column=1, pady=10)
         self.vo2_entry.insert(0, str(vo2))  # Insert the current VO2 into the field
 
+
         submit_button = tk.Button(self, text="Submit Changes", command=self.update_profile)
         submit_button.place(x=160, y=390)
+
+        # Create button that returns to home page
         back_button = tk.Button(self, text="Back", bg="#468ce8", fg="#FFFFFF", font=("Helvetica", 16), command=self.back_to_home)
         back_button.place(x=0,y=0)
         
@@ -402,18 +410,22 @@ class ProfilePage(tk.Frame):
         height = self.height_entry.get()
         weight = self.weight_entry.get()
         vo2 = self.vo2_entry.get()
+        # Check whether changes are valid 
         error = self.controller.check_inputs(self.controller.username, self.controller.password,name,age,gender,height,weight,vo2, False)
         if not(error):
-            # Update user information
+            # Update user information by rewriting the file in the line with new info
             updated_line = f'{self.controller.username};{self.controller.password};{name};{age};{gender};{height};{weight};{vo2}\n'
             with open('userlogininfo.txt', 'r+') as f:
                 lines = f.readlines()
                 f.seek(0)
                 for line in lines:
+                    # Find line with existing user info and write updated file
                     if line.split(';')[0] == self.controller.username:
                         f.write(updated_line)
                     else:
+                        # Keep existing line unchanged 
                         f.write(line)
+            # Close file
             f.close()
 
             # Update profile page with new information
@@ -451,7 +463,7 @@ class bmiPage(tk.Frame):
         bmi_explanation = tk.Label(self, text="BMI (Body Mass Index) represents a measure of body fat based on your height and weight. It is used as a screening tool to categorise individuals (shown below). Press the button and a pointer will popup that corresponds to your range.", bg='#333333', fg="#FFFFFF", font=("Helvetica", 14), wraplength=600, justify=tk.LEFT)
         bmi_explanation.grid(row=1, column=0, columnspan=2, padx=20, pady=40)
 
-        # Disclaimer
+        # Disclaimer advising about BMI 
         disclaimer_label = tk.Label(self, text="Disclaimer: BMI does not take into account muscle mass, bone density, overall body composition, and other factors. It is typically used for individuals who do not engage in heavy physical activities or bodybuilders.", bg='#333333', fg="#FFFFFF", font=("Helvetica", 12), wraplength=600, justify=tk.LEFT)
         disclaimer_label.place(x=70,y=600)
 
@@ -465,7 +477,7 @@ class bmiPage(tk.Frame):
         self.pic_label = ttk.Label(self, image=self.bmi_range_image)
         self.pic_label.grid(row=6, column=0, columnspan=2, pady=20)
 
-        # Pointer image
+        # Initialise pointer image 
         self.pointer_image = Image.open('gaugepointer.png').resize((80,50))
         self.bmipointer_range_image = ImageTk.PhotoImage(self.pointer_image)
         self.pointer_label = ttk.Label(self, image=self.bmipointer_range_image)
@@ -477,6 +489,7 @@ class bmiPage(tk.Frame):
         '''
         Calculates BMI, displays pointer in correct position and displays BMI 
         '''
+        # Convert height to metres 
         height_m = self.controller.height / 100
         weight_kg = self.controller.weight
         # Calculate BMI, rounding to 1 d.p
@@ -514,16 +527,23 @@ class vo2maxPage(tk.Frame):
         back_button.place(x=0,y=0)
 
     def back_to_home(self):
+        # Go back to home page
         self.controller.show_frame(HomePage)
    
     def find_range(self):
+        '''
+        This function finds the VO2 Max range from the data file
+        '''
+        # Initialise variable determing whether category corresponding to user is found
         found = False
         if self.controller.age < 18:
+            # Print message 
             self.vo2max_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Helvetica", 24))
             self.vo2max_label.place(x=40,y=20)
-            self.vo2max_label.config(text=f"Unfortunately, you must be older than 18 years old for your VO2 Max Range to be determined.")        
+            self.vo2max_label.config(text=f"Unfortunately, you must be older than 18 years old for your VO2 Max Range to be determined.", wrap = 500)        
         else:
             category = ''
+            # Check if gender is male or female
             if self.controller.gender == 'Female':
                 f = open('vo2maxwomen.txt', 'r')
             else:
@@ -542,7 +562,7 @@ class vo2maxPage(tk.Frame):
                             category = self.find_category(i)
                             found = True
                             break
-       
+            # Place label showing VO2 Max range 
             self.vo2max_label = tk.Label(self, text="", bg='#333333', fg="#FFFFFF", font=("Helvetica", 20))
             self.vo2max_label.place(x=50,y=50)
             self.vo2max_label.config(text=f"Your VO2 Max is {self.controller.vo2} which is {category} for {self.controller.age} years old.")
@@ -563,12 +583,15 @@ class vo2maxPage(tk.Frame):
         ]
 
         for i, (category, color) in enumerate(ranges):
+            # Show ranges in corresponding colour 
             range_label = tk.Label(self, text=category, bg='#333333', fg=color, font=("Helvetica", 14))
+            # Place each range in a column below the other 
             range_label.place(x=50, y = 300 + 40* (i+1))
 
     def find_category(self, number):
         # Determine the category based on the category in the file 
         if number == 0:
+            # If V02 in second column of file (after age), range is excellent 
             return 'excellent'
         elif number == 1:
             return 'good'
@@ -581,6 +604,7 @@ class vo2maxPage(tk.Frame):
         else:
             return 'poor'
 
+# Start program
 if __name__ == "__main__":
     app = MainApp()
     app.mainloop()
